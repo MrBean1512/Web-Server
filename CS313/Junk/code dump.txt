@@ -1,0 +1,273 @@
+///////////////////////////////////
+//LM4 
+///////////////////////////////////
+/*
+void run_lm4(Socket &server, Socket &conn){
+		// reply with the size of the file
+	// heavy reference to getting the file size from http://www.cplusplus.com/doc/tutorial/files/
+  	ifstream server_data ("./bin/server_data.txt", ios::binary);
+	if (!server_data.is_open()){			//checks whether or not the file was actually opened
+		done("Error opening file. 'server_data' does not exist.");
+	}
+	send_file_size(server_data, conn);
+
+
+
+	//recieve confirmation that the client is ready to recieve the file and send it
+	string msg = conn.msg_recv();					//recieve confirmation that the file size was recieved so that the server may send its contents
+	if (msg != "Ready for full file") {		//checks to make sure that the response/confirmation is correct
+		done("Incorrect client greeting");
+	}
+	
+	//send the message contents
+	if (!server_data.is_open()){			//checks whether or not the file was actually opened
+		done("Error opening file. 'server_data' does not exist.");
+	}
+	server_data.seekg(0, ios::beg);			//return to the beginning of the file so that the file isn't just read from the end
+	msg = "";								//reset the msg string which is recycled for all messages that are sent through the socket
+	string line_placeholder;				//needed a placeholder to pass lines into the msg string
+	while (getline(server_data,line_placeholder)){	//gets each line to read into the msg string
+	  msg += line_placeholder + "\n";
+    }
+	cout << "File contents preped and are being sent now" << endl;
+	conn.msg_send(msg);						//file contents sent to the client as a string
+
+	//recieve confirmation that the message was recieved
+	msg = conn.msg_recv();
+	if (msg != "Thank you.") {				//check if the correct response was recieved
+		done("Incorrect client outro, he didn't even say goodbye.");
+	}
+	cout << "Message recieved and it says '" << msg << "'" << endl;
+
+	//say goodbye and terminate server
+	cout << "Sending 'Adios!'" << endl;
+	msg = "Adios!";
+	conn.msg_send(msg);						//confirms to the client that nothing more is left
+}
+*/
+
+
+
+
+
+
+
+/*
+///////////////////////////////////
+//LM5
+///////////////////////////////////
+
+void run_lm5(Socket &server, Socket &conn){
+			// reply with the size of the file
+	// heavy reference to getting the file size from http://www.cplusplus.com/doc/tutorial/files/
+	int num_files = 0;
+
+	ifstream server_data ("./bin/server_data.txt", ios::binary);
+	if (!server_data.is_open()){			//checks whether or not the file was actually opened
+		done("Error opening file. 'server_data' does not exist.");
+	}
+	send_file_size(server_data, conn);
+	//recieve confirmation that the client is ready to recieve the file and send it
+	string msg = conn.msg_recv();					//recieve confirmation that the file size was recieved so that the server may send its contents
+	if (msg != "Ready for full file") {		//checks to make sure that the response/confirmation is correct
+		done("Incorrect client greeting");
+	}
+	//send the message contents
+	if (!server_data.is_open()){			//checks whether or not the file was actually opened
+		done("Error opening file. 'server_data' does not exist.");
+	}
+	server_data.seekg(0, ios::beg);			//return to the beginning of the file so that the file isn't just read from the end
+	msg = "";								//reset the msg string which is recycled for all messages that are sent through the socket
+	string line_placeholder;				//needed a placeholder to pass lines into the msg string
+	while (getline(server_data,line_placeholder)){	//gets each line to read into the msg string
+	  msg += line_placeholder + "\n";
+	}
+	cout << "File contents preped and are being sent now" << endl;
+	conn.msg_send(msg);						//file contents sent to the client as a string
+	//recieve confirmation that the message was recieved
+	msg = conn.msg_recv();
+	if (msg != "Thank you.") {				//check if the correct response was recieved
+		done("Incorrect client outro, he didn't even say goodbye.");
+	}
+	cout << "Message recieved and it says '" << msg << "'" << endl;
+
+	//say goodbye and terminate server
+	cout << "Sending 'Adios!'" << endl;
+	msg = "Adios!";
+	conn.msg_send(msg);						//confirms to the client that nothing more is left
+}
+*/
+
+
+
+
+
+
+//if (msg != "Hello server") {			//verifies that the response is correct
+	//	done("Incorrect client greeting");
+	//	//do something about checking the requested directory (ie:http://127.0.0.1:50001/index.html)
+	//	//if none is specified, then respond with 200 code and index.html
+	//	//if incorrect is specified, then respond with 300 code
+	//	//
+	//}
+
+
+
+
+
+
+
+
+/////////////
+main
+/////////////
+
+//if (msg == "Send LMFour"){
+	//	cout << "recieved instruction. running LM4" << endl;
+	//	run_lm4(server, conn);
+	//}
+	//else if (msg == "Send LMFive"){
+	//	cout << "recieved instruction. running LM5" << endl;
+	//	run_lm5(server, conn);
+	//}
+	//else{
+	//	done("Instuction not recognized");
+	//}
+
+
+
+
+
+
+
+////////////START
+
+// Step 2: Bind socket to a port (MYPORT)	
+	if (!server.sock_bind("", MYPORT)) {
+		string str;
+		str = "Could not bind to port " + to_string(MYPORT);
+		done(str);
+	}
+
+	// Step 3: Ask my socket to "listen"
+	if (!server.sock_listen(1)) 
+	{
+		done("Could not get socket to listen");
+	}
+
+	cout << "Server is now listening on port " << MYPORT << endl;
+	
+	// Step 4:	Wait to accept a connection from a client.  
+	//			The variable conn is the "connected" socket.  This is the socket that is actually connected to the server.
+	//			The socket variable server can be used to accept another connection if you want.
+	Socket conn = server.sock_accept();
+	
+	cout << "A client just connected to me!\nWaiting for greeting\n";
+
+
+	// Step 5: Receive/send a message from/to the client. 
+
+
+
+	string msg = conn.msg_recv();			// C: Hello server
+	cout << "1Received message:\n" << msg << endl;
+
+
+
+
+///////////////////////////////////////////
+
+/*
+//default response message which forms the response message for the client
+string respond_html(string &msg){
+	msg = "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: ";
+	ifstream file_data ("./assets/index.html", ios::binary);
+	if (!file_data.is_open()){			//checks whether or not the file was actually opened
+		done("Error opening file. 'file_data' does not exist.");
+	}
+	msg += get_file_size(file_data) + "\n\n";
+
+
+	file_data.seekg(0, ios::beg);			//return to the beginning of the file so that the file isn't just read from the end
+	//msg = "";								//reset the msg string which is recycled for all messages that are sent through the socket
+	string line_placeholder;				//needed a placeholder to pass lines into the msg string
+	while (getline(file_data,line_placeholder)){	//gets each line to read into the msg string
+	  msg += line_placeholder + "\n";
+    }
+	
+	//the msg should look something like this in the end
+	//msg = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!";
+	//finding which headers are absolutely required found at this website:
+	//https://medium.com/from-the-scratch/http-server-what-do-you-need-to-know-to-build-a-simple-http-server-from-scratch-d1ef8945e4fa
+	return msg;
+}
+
+string respond_jpg(string &msg){
+	msg = "HTTP/1.1 200 OK\nContent-Type: image/jpeg\nContent-Length: ";
+	ifstream file_data ("./assets/WhitworthLogo.jpg", ios::binary);
+	if (!file_data.is_open()){			//checks whether or not the file was actually opened
+		done("Error opening file. 'whitworthlogo.jpg' does not exist.");
+	}
+	msg += get_file_size(file_data) + "\n\n";
+
+
+	file_data.seekg(0, ios::beg);			//return to the beginning of the file so that the file isn't just read from the end
+	//msg = "";								//reset the msg string which is recycled for all messages that are sent through the socket
+	string line_placeholder;				//needed a placeholder to pass lines into the msg string
+	while (getline(file_data,line_placeholder)){	//gets each line to read into the msg string
+	  msg += line_placeholder + "\n";
+    }
+	
+	//the msg should look something like this in the end
+	//msg = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!";
+	return msg;
+}
+
+string respond_icon(string &msg){
+	msg = "HTTP/1.1 200 OK\nContent-Type: image/x-icon\nContent-Length: ";	//found MIME type at: https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types
+	ifstream file_data ("./assets/favicon.ico", ios::binary);
+	if (!file_data.is_open()){			//checks whether or not the file was actually opened
+		done("Error opening file. 'favicon.ico' does not exist.");
+	}
+	msg += get_file_size(file_data) + "\n\n";
+
+
+	file_data.seekg(0, ios::beg);			//return to the beginning of the file so that the file isn't just read from the end
+	//msg = "";								//reset the msg string which is recycled for all messages that are sent through the socket
+	string line_placeholder;				//needed a placeholder to pass lines into the msg string
+	while (getline(file_data,line_placeholder)){	//gets each line to read into the msg string
+	  msg += line_placeholder + "\n";
+    }
+	
+	//the msg should look something like this in the end
+	//msg = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!";
+	return msg;
+}
+*/
+
+
+
+
+
+
+
+
+/*
+	//send the jpg
+	msg = conn.msg_recv();			// Client sends jpg request
+	cout << "2Received message:\n\n" << endl;
+	
+	//msg = respond_jpg(msg);		//create msg
+	msg = respond(msg);	//create msg
+	cout << "sending whitworth logo" << endl;
+	conn.msg_send(msg);			//send msg
+
+	//send the icon
+	msg = conn.msg_recv();			// Client sends icon request
+	cout << "3Received message:\n\n" << endl;
+	
+	//msg = respond_icon(msg);		//create msg
+	msg = respond(msg);	//create msg
+	cout << "sending icon" << endl;
+	conn.msg_send(msg);			//send msg
+	*/
